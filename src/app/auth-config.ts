@@ -23,8 +23,8 @@ const isIE =
 
 export const msalConfig: Configuration = {
     auth: {
-        clientId: 'Enter_the_Application_Id_Here', // This is the ONLY mandatory field that you need to supply.
-        authority: 'https://login.microsoftonline.com/Enter_the_Tenant_Info_Here', // Defaults to "https://login.microsoftonline.com/common"
+        clientId: 'f23a63f3-6867-4372-85aa-4b9e8beb18f4', // This is the ONLY mandatory field that you need to supply.
+        authority: 'https://login.microsoftonline.com/61cbff17-48ea-4569-8b13-1ee1a922424c', // Defaults to "https://login.microsoftonline.com/common"
         redirectUri: '/auth', // Points to window.location.origin by default. You must register this URI on Azure portal/App Registration.
         postLogoutRedirectUri: '/', // Points to window.location.origin by default.
         clientCapabilities: ['CP1'], // This lets the resource server know that this client can handle claim challenges.
@@ -35,11 +35,27 @@ export const msalConfig: Configuration = {
     },
     system: {
         loggerOptions: {
-            loggerCallback(logLevel: LogLevel, message: string) {
-                console.log(message);
-            },
             logLevel: LogLevel.Verbose,
-            piiLoggingEnabled: false,
+            loggerCallback: (level, message, containsPii) => {
+                if (containsPii) {
+                    return;
+                }
+                switch (level) {
+                    case LogLevel.Error:
+                        console.error(message);
+                        return;
+                    case LogLevel.Info:
+                        console.info(message);
+                        return;
+                    case LogLevel.Verbose:
+                        console.debug(message);
+                        return;
+                    case LogLevel.Warning:
+                        console.warn(message);
+                        return;
+                }
+            },
+            piiLoggingEnabled: false
         },
     },
 };
